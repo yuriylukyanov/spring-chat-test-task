@@ -37,46 +37,4 @@ public class UserService {
             throw e;
         }
     }
-
-    // public List<User> readStudents(){
-    //     return userRepository.findAll();
-    // }
-
-    // @Transactional
-    // public String updateStudent(User student){
-    //     if (userRepository.existsByUsername(student.getEmail())){
-    //         try {
-    //             List<User> students = userRepository.findByEmail(student.getEmail());
-    //             students.stream().forEach(s -> {
-    //                 User studentToBeUpdate = userRepository.findById(s.getId()).get();
-    //                 studentToBeUpdate.setName(student.getName());
-    //                 studentToBeUpdate.setEmail(student.getEmail());
-    //                 userRepository.save(studentToBeUpdate);
-    //             });
-    //             return "Student record updated.";
-    //         }catch (Exception e){
-    //             throw e;
-    //         }
-    //     }else {
-    //         return "Student does not exists in the database.";
-    //     }
-    // }
-
-    // @Transactional
-    // public String deleteStudent(User student){
-    //     if (userRepository.existsByUsername(student.getEmail())){
-    //         try {
-    //             List<User> students = userRepository.findByEmail(student.getEmail());
-    //             students.stream().forEach(s -> {
-    //                 userRepository.delete(s);
-    //             });
-    //             return "Student record deleted successfully.";
-    //         }catch (Exception e){
-    //             throw e;
-    //         }
-
-    //     }else {
-    //         return "Student does not exist";
-    //     }
-    // }
 }

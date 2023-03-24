@@ -1,7 +1,6 @@
 package com.pxp.SQLite.demo.controllers;
 
 import com.pxp.SQLite.demo.dto.AddUser;
-import com.pxp.SQLite.demo.entities.User;
 import com.pxp.SQLite.demo.exceptions.BadRequestException;
 import com.pxp.SQLite.demo.services.UserService;
 
