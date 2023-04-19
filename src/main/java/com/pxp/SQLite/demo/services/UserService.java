@@ -14,24 +14,27 @@ import java.time.OffsetDateTime;
 
 @Service
 public class UserService {
+    private UserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Transactional
     public String createUser(AddUser dto) throws Exception{
         try {
-            if (dto.username == null || dto.username == "")
+            if (dto.getUsername() == null || dto.getUsername().isEmpty())
                 throw new BadRequestException("empty username");
-            if (!userRepository.existsByUsername(dto.username)){
+            if (!userRepository.existsByUsername(dto.getUsername())){
                 var user = new User();
-                user.id = DigestUtils.sha256Hex(dto.username);
-                user.username = dto.username;
-                user.created_at = OffsetDateTime.now().toString();
+                user.setId(DigestUtils.sha256Hex(dto.getUsername()));
+                user.setUsername(dto.getUsername());
+                user.setCreated_at(OffsetDateTime.now().toString());
                 userRepository.save(user);
-                return user.id;
+                return user.getId();
             } else {
-                throw new BadRequestException("username " + dto.username + " already exists");
+                throw new BadRequestException("username " + dto.getUsername() + " already exists");
             }
         } catch (Exception e){
             throw e;

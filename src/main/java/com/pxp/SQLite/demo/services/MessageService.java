@@ -20,61 +20,64 @@ import com.pxp.SQLite.demo.repositories.MessageRepository;
 
 @Service
 public class MessageService {
-    @Autowired
     private ChatRepository chatRepository;
-
-    @Autowired
     private ChatMemberRepository chatMemberRepository;
+    private MessageRepository messageRepository;
 
     @Autowired
-    private MessageRepository messageRepository;
+    public MessageService(ChatRepository chatRepository, ChatMemberRepository chatMemberRepository,
+            MessageRepository messageRepository) {
+        this.chatRepository = chatRepository;
+        this.chatMemberRepository = chatMemberRepository;
+        this.messageRepository = messageRepository;
+    }
 
     @Transactional
     public String createMessage(AddMessage dto) throws BadRequestException {
-        if (dto.author == null || dto.author == "")
+        if (dto.getAuthor() == null || dto.getAuthor().isEmpty())
             throw new BadRequestException("empty author");
         
-        if (dto.chat == null || dto.chat == "")
+        if (dto.getChat() == null || dto.getChat().isEmpty())
             throw new BadRequestException("empty chat");
 
-        if (dto.text == null || dto.text == "")
+        if (dto.getText() == null || dto.getText().isEmpty())
             throw new BadRequestException("empty text");
 
-        var chat = chatRepository.findAllById(List.of(dto.chat));
+        var chat = chatRepository.findAllById(List.of(dto.getChat()));
         if (chat.isEmpty())
             throw new BadRequestException("chat not found");
 
-        var member = chatMemberRepository.findChatMember(dto.author, dto.chat);
+        var member = chatMemberRepository.findChatMember(dto.getAuthor(), dto.getChat());
         if (member.isEmpty())
             throw new BadRequestException("author not found");
         
         var message = new Message();
-        message.id = UUID.randomUUID().toString();
-        message.author = member.get(0);
-        message.chat = chat.get(0);
-        message.text = dto.text;
-        message.created_at = OffsetDateTime.now().toInstant().toEpochMilli();
+        message.setId(UUID.randomUUID().toString());
+        message.setAuthor(member.get(0));
+        message.setChat(chat.get(0));
+        message.setText(dto.getText());
+        message.setCreated_at(OffsetDateTime.now().toInstant().toEpochMilli());
 
         messageRepository.save(message);
 
-        return message.id;
+        return message.getId();
     }
 
     public List<Message> getMessages(MessagesGet dto) throws BadRequestException {
-        if (dto.chat == null || dto.chat == "")
+        if (dto.getChat() == null || dto.getChat().isEmpty())
             throw new BadRequestException("empty chat");
         
-        var messages = messageRepository.getAllByChatId(dto.chat);
+        var messages = messageRepository.getAllByChatId(dto.getChat());
         return messages;
     }
 
     public int getEntryCount(MessagesEntryCount dto) throws BadRequestException {
-        if (dto.chat == null || dto.chat == "")
+        if (dto.getChat() == null || dto.getChat().isEmpty())
             throw new BadRequestException("empty chat");
-        if (dto.text == null)
-            dto.text = "";
+        if (dto.getText() == null)
+            dto.setText("");
 
-        var count = messageRepository.entryCount(dto.chat, dto.text);
+        var count = messageRepository.entryCount(dto.getChat(), dto.getText());
         return count;
     }
     

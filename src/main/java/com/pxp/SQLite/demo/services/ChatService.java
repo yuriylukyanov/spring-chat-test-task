@@ -20,52 +20,53 @@ import com.pxp.SQLite.demo.repositories.UserRepository;
 
 @Service
 public class ChatService {
+    private UserRepository userRepository;
+    private ChatRepository chatRepository;
     
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ChatRepository chatRepository;
+    public ChatService(UserRepository userRepository, ChatRepository chatRepository) {
+        this.userRepository = userRepository;
+        this.chatRepository = chatRepository;
+    }
 
     @Transactional
     public String createChat(AddChat dto) throws Exception{
         try {
-            if (dto.name == null || dto.name == "")
+            if (dto.getName() == null || dto.getName().isEmpty())
                 throw new BadRequestException("empty name");
 
-            if (dto.users == null || dto.users.isEmpty())
+            if (dto.getUsers() == null || dto.getUsers().isEmpty())
                 throw new BadRequestException("empty users");
             
-            var users = userRepository.findByIdIn(dto.users);
+            var users = userRepository.findByIdIn(dto.getUsers());
 
-            if (users.size() != dto.users.size()) 
+            if (users.size() != dto.getUsers().size()) 
                 throw new BadRequestException("users not found");
 
-            
             var chat = new Chat();
-            chat.id = UUID.randomUUID().toString();
-            chat.name = dto.name;
-            chat.created_at = OffsetDateTime.now().toInstant().toEpochMilli();
+            chat.setId(UUID.randomUUID().toString());
+            chat.setName(dto.getName());
+            chat.setCreated_at(OffsetDateTime.now().toInstant().toEpochMilli());
             
             chat = chatRepository.save(chat);
             for (var user : users) {
                 var chatMember = new ChatMember();
-                chatMember.id = DigestUtils.sha256Hex(user.id + chat.id);
-                chatMember.user = user;
-                chat.users.add(chatMember);
+                chatMember.setId(DigestUtils.sha256Hex(user.getId() + chat.getId()));
+                chatMember.setUser(user);
+                chat.getUsers().add(chatMember);
             }
 
-            return chat.id;
+            return chat.getId();
         } catch (Exception e){
             throw e;
         }
     }
 
     public List<Chat> getChats(ChatsGet dto) throws BadRequestException {
-        if (dto.user == null || dto.user == "")
+        if (dto.getUser() == null || dto.getUser().isEmpty())
             throw new BadRequestException("empty user");
         
-        var chats = chatRepository.getChatsByUserId(dto.user);
+        var chats = chatRepository.getChatsByUserId(dto.getUser());
 
         return chats;
     }

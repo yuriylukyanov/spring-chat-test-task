@@ -16,8 +16,12 @@ import com.pxp.SQLite.demo.services.ChatService;
 @RestController
 @RequestMapping("chats")
 public class ChatController {
-    @Autowired
     private ChatService chatService;
+    
+    @Autowired
+    public ChatController(ChatService chatService) {
+        this.chatService = chatService;
+    }
 
     @PostMapping(value = "add")
     public ResponseEntity createChat(@RequestBody AddChat dto) throws Exception{

@@ -1,5 +1,13 @@
 package com.pxp.SQLite.demo.dto;
 
 public class MessagesGet {
-    public String chat; 
+    private String chat;
+
+    public String getChat() {
+        return chat;
+    }
+
+    public void setChat(String chat) {
+        this.chat = chat;
+    } 
 }

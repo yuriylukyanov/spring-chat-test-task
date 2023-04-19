@@ -17,8 +17,12 @@ import com.pxp.SQLite.demo.services.MessageService;
 @RestController
 @RequestMapping("messages")
 public class MessageController {
-    @Autowired
     private MessageService messageService;
+
+    @Autowired
+    public MessageController(MessageService messageService) {
+        this.messageService = messageService;
+    }
 
     @PostMapping(value = "add")
     public ResponseEntity createChat(@RequestBody AddMessage dto) throws Exception{
