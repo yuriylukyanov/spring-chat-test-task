@@ -3,17 +3,17 @@
 Как запустить:
 
 1.  Открыть терминал или консоль в корневой папке проекта.
-2.  В Windows выполнить: ./mvnw.cmd clean install  
-    ./mvnw.cmd spring-boot:run
+2.  В Windows выполнить: ./mvnw.cmd clean install
+3.  Применить миграции flyway
+4.  Запустить ./mvnw.cmd spring-boot:run
 
 в Linux выполнить:
 
 ```plaintext
 ./mvnw clean install
+## применить миграции flyway
 ./mvnw spring-boot:run
 ```
-
-База данных - sqlite. При запуске генерируется автоматически в корневой папке проекта.
 
 ОСНОВНЫЕ СУЩНОСТИ:
 
