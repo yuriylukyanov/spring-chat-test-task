@@ -5,17 +5,17 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.0</version>
+		<version>3.5.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.pxp</groupId>
-	<artifactId>SQLite.demo</artifactId>
+	<groupId>com.example</groupId>
+	<artifactId>postgres.demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Spring Boot and SQLite</name>
-	<description>CRUD example with Spring Boot and SQLite</description>
+	<name>Spring Boot and Postgres</name>
+	<description>CRUD example with Spring Boot and Postgres</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>21</java.version>
 	</properties>
 
 	<dependencies>
@@ -27,12 +27,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>org.xerial</groupId>
-			<artifactId>sqlite-jdbc</artifactId>
-		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -40,25 +34,39 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-database-postgresql</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-    		<groupId>commons-codec</groupId>
-    		<artifactId>commons-codec</artifactId>
-    		<version>1.11</version>
-			</dependency>
-		</dependencies>
-
+	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<configuration>
+					<url>jdbc:postgresql://localhost:5432/spring-chat-test-task</url>
+					<user>postgres</user>
+					<password>postgres</password>
+					<schemas>
+						<schema>public</schema>
+					</schemas>
+					<locations>filesystem:src/main/resources/db/migration</locations>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
-
 </project>

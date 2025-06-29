@@ -1,0 +1,37 @@
+CREATE TABLE chat (
+  id UUID NOT NULL,
+   name VARCHAR(255) NOT NULL,
+   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+   CONSTRAINT pk_chat PRIMARY KEY (id)
+);
+
+CREATE TABLE chat_member (
+  id UUID NOT NULL,
+   user_id UUID NOT NULL,
+   chat_id UUID NOT NULL,
+   CONSTRAINT pk_chat_member PRIMARY KEY (id)
+);
+
+CREATE TABLE message (
+  id UUID NOT NULL,
+   text VARCHAR(255) NOT NULL,
+   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+   author_id UUID NOT NULL,
+   chat_id UUID NOT NULL,
+   CONSTRAINT pk_message PRIMARY KEY (id)
+);
+
+CREATE TABLE public."user" (
+  id UUID NOT NULL,
+   username VARCHAR(255) NOT NULL,
+   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+   CONSTRAINT pk_user PRIMARY KEY (id)
+);
+
+ALTER TABLE chat_member ADD CONSTRAINT FK_CHAT_MEMBER_ON_CHAT FOREIGN KEY (chat_id) REFERENCES chat (id);
+
+ALTER TABLE chat_member ADD CONSTRAINT FK_CHAT_MEMBER_ON_USER FOREIGN KEY (user_id) REFERENCES public."user" (id);
+
+ALTER TABLE message ADD CONSTRAINT FK_MESSAGE_ON_AUTHOR FOREIGN KEY (author_id) REFERENCES chat_member (id);
+
+ALTER TABLE message ADD CONSTRAINT FK_MESSAGE_ON_CHAT FOREIGN KEY (chat_id) REFERENCES chat (id);
