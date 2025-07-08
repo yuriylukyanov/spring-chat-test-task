@@ -20,6 +20,18 @@ public class User {
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
 
+    @Column(name = "place_id", nullable = true)
+    private String placeId;
+
+    @Column(name = "place_name", nullable = true)
+    private String placeName;
+
+    @Column(name = "place_lat", nullable = true)
+    private Float placeLat;
+
+    @Column(name = "place_lon", nullable = true)
+    private Float placeLon;
+
     public UUID getId() {
         return id;
     }
@@ -43,4 +55,20 @@ public class User {
     public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
+
+    public String getPlaceName() { return placeName; }
+
+    public void setPlaceName(String placeName) { this.placeName = placeName; }
+
+    public String getPlaceId() { return placeId; }
+
+    public void setPlaceId(String placeId) { this.placeId = placeId; }
+
+    public Float getPlaceLat() { return placeLat; }
+
+    public void setPlaceLat(Float placeLat) { this.placeLat = placeLat; }
+
+    public Float getPlaceLon() { return placeLon; }
+
+    public void setPlaceLon(Float placeLon) { this.placeLon = placeLon; }
 }

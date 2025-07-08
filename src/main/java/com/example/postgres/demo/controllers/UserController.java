@@ -1,6 +1,7 @@
 package com.example.postgres.demo.controllers;
 
 import com.example.postgres.demo.dto.AddUser;
+import com.example.postgres.demo.dto.SetLocationDTO;
 import com.example.postgres.demo.services.UserService;
 
 import org.springframework.http.ResponseEntity;
@@ -21,5 +22,11 @@ public class UserController {
     @PostMapping(value = "add")
     public ResponseEntity createUser(@RequestBody AddUser dto) throws Exception {
         return ResponseEntity.ok(userService.createUser(dto));
+    }
+
+    @PostMapping(value = "setLocation")
+    public ResponseEntity setLocation(@RequestBody SetLocationDTO dto) throws Exception {
+        userService.setLocation(dto);
+        return ResponseEntity.ok().build();
     }
 }
