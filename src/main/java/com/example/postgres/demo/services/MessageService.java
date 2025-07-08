@@ -1,19 +1,16 @@
 package com.example.postgres.demo.services;
 
-import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.UUID;
 
 import com.example.postgres.demo.dto.MessageDTO;
 import com.example.postgres.demo.mappers.MessageEntityToMessageDTOMapper;
-import jakarta.transaction.Transactional;
+import com.example.postgres.demo.services.kafka.addMessage.AddMessageKafkaSender;
 
 import org.springframework.stereotype.Service;
 
 import com.example.postgres.demo.dto.AddMessage;
 import com.example.postgres.demo.dto.MessagesEntryCount;
 import com.example.postgres.demo.dto.MessagesGet;
-import com.example.postgres.demo.entities.Message;
 import com.example.postgres.demo.exceptions.BadRequestException;
 import com.example.postgres.demo.repositories.ChatMemberRepository;
 import com.example.postgres.demo.repositories.ChatRepository;
@@ -21,20 +18,23 @@ import com.example.postgres.demo.repositories.MessageRepository;
 
 @Service
 public class MessageService {
-    private ChatRepository chatRepository;
-    private ChatMemberRepository chatMemberRepository;
-    private MessageRepository messageRepository;
+    private final ChatRepository chatRepository;
+    private final ChatMemberRepository chatMemberRepository;
+    private final MessageRepository messageRepository;
+    private final AddMessageKafkaSender messageSender;
 
-    public MessageService(ChatRepository chatRepository,
-          ChatMemberRepository chatMemberRepository,
-          MessageRepository messageRepository) {
+    public MessageService(
+            ChatRepository chatRepository,
+            ChatMemberRepository chatMemberRepository,
+            MessageRepository messageRepository,
+            AddMessageKafkaSender messageSender) {
         this.chatRepository = chatRepository;
         this.chatMemberRepository = chatMemberRepository;
         this.messageRepository = messageRepository;
+        this.messageSender = messageSender;
     }
 
-    @Transactional
-    public UUID createMessage(AddMessage dto) throws BadRequestException {
+    public void createMessage(AddMessage dto) throws BadRequestException {
         if (dto.getAuthor() == null)
             throw new BadRequestException("empty author");
         
@@ -51,17 +51,8 @@ public class MessageService {
         var member = chatMemberRepository.findChatMember(dto.getAuthor(), dto.getChat());
         if (member.isEmpty())
             throw new BadRequestException("author not found");
-        
-        var message = new Message();
-        message.setId(UUID.randomUUID());
-        message.setAuthor(member.getFirst());
-        message.setChat(chat.getFirst());
-        message.setText(dto.getText());
-        message.setCreatedAt(OffsetDateTime.now());
 
-        messageRepository.save(message);
-
-        return message.getId();
+        messageSender.sendMessage(dto);
     }
 
     public List<MessageDTO> getMessages(MessagesGet dto) throws BadRequestException {

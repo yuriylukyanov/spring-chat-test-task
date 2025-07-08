@@ -22,7 +22,8 @@ public class MessageController {
 
     @PostMapping(value = "add")
     public ResponseEntity createChat(@RequestBody AddMessage dto) throws Exception {
-        return ResponseEntity.ok(messageService.createMessage(dto));
+        messageService.createMessage(dto);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping(value = "get")
